@@ -30,6 +30,11 @@ import {
   ArrowUp,
   Timer,
   Calendar,
+  Maximize2,
+  X,
+  ChevronLeft,
+  ChevronRight,
+  Download,
 } from "lucide-react";
 import Image from "next/image";
 
@@ -38,6 +43,7 @@ export default function Page() {
     <main>
       <TopNav />
       <Hero />
+      <Ambassadors />
       <Webinar />
       <WhyJoin />
       <Ladder />
@@ -175,6 +181,208 @@ function Hero() {
     </section>
   );
 }
+
+/* ---------------- CAMPUS AMBASSADORS — GROUP PHOTOS ---------------- */
+type GroupPhoto = {
+  src: string;
+  alt: string;
+  caption?: string;
+};
+
+const GROUP_PHOTOS: GroupPhoto[] = [
+  {
+    src: "/ca-1.jpeg",
+    alt: "Jyesta Campus Executives",
+  },
+  {
+    src: "/ca-2.jpeg",
+    alt: "Jyesta Campus Executives",
+  },
+];
+
+function Ambassadors() {
+  const [lightbox, setLightbox] = useState<{ open: boolean; index: number }>({
+    open: false,
+    index: 0,
+  });
+
+  const openAt = (i: number) => setLightbox({ open: true, index: i });
+  const close = () => setLightbox({ open: false, index: 0 });
+  const prev = () =>
+    setLightbox((s) => ({
+      open: true,
+      index: (s.index - 1 + GROUP_PHOTOS.length) % GROUP_PHOTOS.length,
+    }));
+  const next = () =>
+    setLightbox((s) => ({
+      open: true,
+      index: (s.index + 1) % GROUP_PHOTOS.length,
+    }));
+
+  return (
+    <section
+      id="ambassadors"
+      className="py-14 md:py-20 bg-[hsl(var(--muted)/.3)]"
+    >
+      <div className="mx-auto max-w-7xl px-4">
+        <SectionTitle
+          badge="Faces of the program"
+          title="Our Campus Executives"
+          subtitle="Leaders building the Jyesta community across India."
+        />
+
+        {/* Two per row on sm+; one per row on mobile */}
+        <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-5">
+          {GROUP_PHOTOS.map((p, i) => (
+            <div
+              key={p.src}
+              className="group relative rounded-2xl p-[1px] bg-brand-gradient"
+            >
+              <button
+                type="button"
+                onClick={() => openAt(i)}
+                className="relative w-full overflow-hidden rounded-[calc(theme(borderRadius.xl))] border bg-[hsl(var(--card))] outline-none"
+                aria-label={`View photo: ${p.alt}`}
+              >
+                <div className="relative w-full aspect-[4/3]">
+                  <Image
+                    src={p.src}
+                    alt={p.alt}
+                    fill
+                    className="object-cover transition-transform duration-300 group-hover:scale-[1.02]"
+                    sizes="(min-width: 640px) 50vw, 100vw"
+                    loading="lazy"
+                  />
+                  {/* hover overlay */}
+                  <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[hsl(var(--background)/.55)] via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <div className="pointer-events-none absolute right-3 bottom-3 inline-flex items-center gap-1 rounded-md border bg-[hsl(var(--background)/.7)] px-2 py-1 text-xs opacity-0 group-hover:opacity-100 transition-opacity">
+                    <Maximize2 className="h-3.5 w-3.5" /> View
+                  </div>
+                </div>
+
+                {/* caption strip */}
+                {p.caption && (
+                  <div className="flex items-center justify-between px-3 py-2 text-sm">
+                    <span className="truncate">{p.caption}</span>
+                  </div>
+                )}
+              </button>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Lightbox */}
+      <Lightbox
+        items={GROUP_PHOTOS}
+        open={lightbox.open}
+        index={lightbox.index}
+        onClose={close}
+        onPrev={prev}
+        onNext={next}
+      />
+    </section>
+  );
+}
+
+function Lightbox({
+  items,
+  open,
+  index,
+  onClose,
+  onPrev,
+  onNext,
+}: {
+  items: GroupPhoto[];
+  open: boolean;
+  index: number;
+  onClose: () => void;
+  onPrev: () => void;
+  onNext: () => void;
+}) {
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+      if (e.key === "ArrowLeft") onPrev();
+      if (e.key === "ArrowRight") onNext();
+    };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [open, onClose, onPrev, onNext]);
+
+  if (!open) return null;
+  const item = items[index];
+
+  return (
+    <div
+      className="fixed inset-0 z-[70] bg-black/80 backdrop-blur-sm"
+      aria-modal="true"
+      role="dialog"
+      onClick={onClose}
+    >
+      <div
+        className="absolute inset-0 flex items-center justify-center p-4"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Controls */}
+        <button
+          onClick={onClose}
+          className="absolute top-4 right-4 inline-flex items-center rounded-md border px-3 py-2 text-xs bg-[hsl(var(--background)/.7)] hover:opacity-90"
+          aria-label="Close"
+        >
+          <X className="h-4 w-4" />
+        </button>
+        <button
+          onClick={onPrev}
+          className="absolute left-4 top-1/2 -translate-y-1/2 inline-flex items-center rounded-md border px-3 py-2 text-xs bg-[hsl(var(--background)/.7)] hover:opacity-90"
+          aria-label="Previous"
+        >
+          <ChevronLeft className="h-5 w-5" />
+        </button>
+        <button
+          onClick={onNext}
+          className="absolute right-4 top-1/2 -translate-y-1/2 inline-flex items-center rounded-md border px-3 py-2 text-xs bg-[hsl(var(--background)/.7)] hover:opacity-90"
+          aria-label="Next"
+        >
+          <ChevronRight className="h-5 w-5" />
+        </button>
+
+        {/* Image */}
+        <div className="relative w-full max-w-5xl h-[70vh]">
+          <Image
+            src={item.src}
+            alt={item.alt}
+            fill
+            className="object-contain select-none"
+            sizes="100vw"
+            priority
+          />
+        </div>
+
+        {/* Caption & actions */}
+        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 w-[min(95%,56rem)]">
+          <div className="flex items-center justify-between gap-3 rounded-md border bg-[hsl(var(--background)/.8)] px-3 py-2 text-xs">
+            <div className="truncate">
+              <strong>
+                Photo {index + 1} / {items.length}:
+              </strong>{" "}
+              <span className="truncate">{item.caption || item.alt}</span>
+            </div>
+            <a
+              href={item.src}
+              download
+              className="inline-flex items-center gap-1 rounded-md border px-2 py-1 hover:opacity-90"
+            >
+              <Download className="h-3.5 w-3.5" /> Download
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 /* ---------------- FREE WEBINAR / MASTERCLASS ---------------- */
 function Webinar() {
   // friendly date string for “Registration closes Sun, 24 Aug 11:59 PM IST”
