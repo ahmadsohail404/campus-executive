@@ -1,10 +1,9 @@
 "use client";
-
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import {
   Sparkles,
   ShieldCheck,
-  Calendar,
   Users,
   Handshake,
   Gift,
@@ -19,20 +18,74 @@ import {
   Megaphone,
   ArrowRight,
   Check,
+  Mail,
+  Phone,
+  MapPin,
+  Instagram,
+  Linkedin,
+  Youtube,
+  Twitter,
+  Facebook,
+  LifeBuoy,
+  ArrowUp,
+  Timer,
+  Calendar,
 } from "lucide-react";
+import Image from "next/image";
 
 export default function Page() {
   return (
     <main>
+      <TopNav />
       <Hero />
+      <Webinar />
       <WhyJoin />
       <Ladder />
       <HowItWorks />
       <EligAndTasks />
-      <FAQ />
-      <FinalCTA />
+      <Apply />
       <Footer />
     </main>
+  );
+}
+
+/* ---------------- Sticky top nav ---------------- */
+function TopNav() {
+  const items = [
+    { href: "#benefits", label: "Benefits" },
+    { href: "#ladder", label: "Ladder" },
+    { href: "#process", label: "Process" },
+  ];
+  return (
+    <div className="sticky top-0 z-40 backdrop-blur bg-[hsl(var(--background)/0.7)] border-b">
+      <div className="mx-auto sm:px-10 px-4 h-12 flex items-center sm:justify-between justify-center">
+        <Link
+          href="/"
+          className="font-semibold flex justify-center items-center"
+        >
+          <Image
+            src="/logo-light.png"
+            alt="Jyesta Logo"
+            width={90}
+            height={90}
+            className="mt-1 mr-4"
+          />
+          <span className="text-gradient">Jyesta Campus Executive</span>
+        </Link>
+        <nav className="hidden md:flex items-center gap-4 text-sm">
+          {items.map((i) => (
+            <a
+              key={i.href}
+              href={i.href}
+              className="opacity-80 hover:opacity-100"
+            >
+              {i.label}
+            </a>
+          ))}
+        </nav>
+      </div>
+      <div className="h-[2px] bg-brand-gradient" />
+    </div>
   );
 }
 
@@ -65,7 +118,7 @@ function Hero() {
   return (
     <section className="relative overflow-hidden pt-12">
       <div className="pointer-events-none absolute inset-0 -z-10 bg-aurora" />
-      <div className="mx-auto max-w-7xl px-4 py-12 md:py-20">
+      <div className="mx-auto max-w-7xl px-4 py-12 md:py-10">
         <div className="text-center max-w-3xl mx-auto">
           <div className="mb-3 inline-flex items-center rounded-full border px-2.5 py-1 text-xs border-[hsl(var(--border)/.6)] bg-[hsl(var(--background)/.7)]">
             <Sparkles className="h-3.5 w-3.5 mr-1 text-[hsl(var(--primary))]" />
@@ -73,7 +126,8 @@ function Hero() {
           </div>
 
           <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight leading-tight">
-            Become a <span className="text-gradient">Jyesta Campus Mitra</span>
+            Become a{" "}
+            <span className="text-gradient">Jyesta Campus Executive</span>
           </h1>
 
           <p className="mt-4 text-[hsl(var(--muted-foreground))] md:text-lg">
@@ -83,9 +137,11 @@ function Hero() {
           </p>
 
           <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
-            <Link href="#apply" className="btn-aurora">
-              Apply Now <ArrowRight className="h-4 w-4" />
-            </Link>
+            <div className="mt-8 rounded-2xl p-[1px] bg-brand-gradient">
+              <div className="rounded-[calc(theme(borderRadius.xl))] border bg-[hsl(var(--card))] p-4 md:p-6">
+                <ApplyForm />
+              </div>
+            </div>
             <a
               href="#ladder"
               className="inline-flex items-center rounded-md border px-4 py-2 text-sm hover:opacity-90"
@@ -96,15 +152,15 @@ function Hero() {
 
           <div className="mt-6 flex flex-wrap items-center justify-center gap-3 text-sm">
             <Pill icon={ShieldCheck} text="Official Jyesta Program" />
-            <Pill icon={Calendar} text="Launch: This Semester" />
-            <Pill icon={Users} text="One Mitra per College" />
+            {/* <Pill icon={Calendar} text="Launch: This Semester" /> */}
+            <Pill icon={Users} text="One Executive per College" />
           </div>
         </div>
 
         <div className="mt-8 grid grid-cols-3 gap-3 max-w-3xl mx-auto">
-          <Stat label="Colleges" value="150+" />
-          <Stat label="Students Reached" value="20,000+" />
-          <Stat label="Events Hosted" value="500+" />
+          <Stat label="Colleges" value="100+" />
+          <Stat label="Students Trained" value="5,000+" />
+          <Stat label="Online" value="100%" />
         </div>
       </div>
 
@@ -119,6 +175,193 @@ function Hero() {
     </section>
   );
 }
+/* ---------------- FREE WEBINAR / MASTERCLASS ---------------- */
+function Webinar() {
+  // friendly date string for “Registration closes Sun, 24 Aug 11:59 PM IST”
+  const { label, targetMs } = useMemo(() => {
+    const target = getNextSundayISTEndMs();
+    const label = getISTClosingLabel(target);
+    return { label, targetMs: target };
+  }, []);
+
+  return (
+    <section id="webinar" className="relative overflow-hidden">
+      <div
+        className="absolute inset-0 -z-10 bg-aurora opacity-30"
+        aria-hidden
+      />
+      <div className="mx-auto max-w-5xl px-4 py-10 md:py-14">
+        <div className="rounded-2xl p-[1px] bg-brand-gradient">
+          <div className="rounded-[calc(theme(borderRadius.xl))] border bg-[hsl(var(--card))]">
+            <div className="p-4 md:p-6 grid gap-6 md:grid-cols-[1.2fr_1fr] items-center">
+              {/* Left: details */}
+              <div>
+                <div className="inline-flex items-center gap-2 rounded-full border px-2.5 py-1 text-xs border-[hsl(var(--border)/.6)] bg-[hsl(var(--background)/.7)] font-bold">
+                  <Sparkles className="h-5 w-5 text-[hsl(var(--primary))]" />
+                  FREE MASTERCLASS
+                </div>
+
+                <h3 className="mt-3 text-2xl md:text-3xl font-semibold tracking-tight">
+                  Launch your career with <br />
+                  <span className="text-gradient">Jyesta Corporate</span> & Earn
+                  Perks
+                </h3>
+
+                <ul className="mt-4 space-y-2 text-sm text-[hsl(var(--muted-foreground))]">
+                  <li className="flex items-start gap-2">
+                    <Calendar className="h-4 w-4 text-[hsl(var(--primary))] mt-0.5" />
+                    <span>{label}</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <Users className="h-4 w-4 text-[hsl(var(--primary))] mt-0.5" />
+                    <span>Limited seats • Live Q&A with mentors</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <ShieldCheck className="h-4 w-4 text-[hsl(var(--primary))] mt-0.5" />
+                    <span>Certificate of Participation (free)</span>
+                  </li>
+                </ul>
+
+                <div className="mt-5 flex flex-wrap items-center gap-3">
+                  <a href="#" className="btn-aurora">
+                    Apply for Free <ArrowRight className="h-4 w-4" />
+                  </a>
+                  <a
+                    href="#ladder"
+                    className="inline-flex items-center rounded-md border px-4 py-2 text-sm hover:opacity-90"
+                  >
+                    See Perks Ladder
+                  </a>
+                </div>
+
+                {/* urgency ticker */}
+                <div className="mt-4 text-xs">
+                  <div className="inline-flex items-center gap-2 rounded-full border px-2.5 py-1 border-[hsl(var(--border)/.6)] bg-[hsl(var(--background)/.7)]">
+                    <Timer className="h-3.5 w-3.5 text-[hsl(var(--destructive))]" />
+                    Hurry! registrations close soon!
+                  </div>
+                </div>
+              </div>
+
+              {/* Right: countdown */}
+              <div className="rounded-xl border bg-[hsl(var(--background)/.6)] p-4 text-center">
+                <div className="text-sm font-medium text-[hsl(var(--muted-foreground))]">
+                  Registration ends in
+                </div>
+                <Countdown targetMs={targetMs} />
+                <div className="mt-3 text-xs text-[hsl(var(--muted-foreground))]">
+                  Sunday • 11:59 PM IST
+                </div>
+              </div>
+            </div>
+
+            {/* bottom urgency bar */}
+            <div className="h-1 bg-brand-gradient animate-pulse" aria-hidden />
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* Countdown to Sunday 11:59 PM IST */
+
+function Countdown({ targetMs }: { targetMs: number }) {
+  const [remaining, setRemaining] = useState(() =>
+    Math.max(0, targetMs - Date.now())
+  );
+
+  useEffect(() => {
+    const id = setInterval(() => {
+      setRemaining((prev) => {
+        const next = targetMs - Date.now();
+        return next <= 0 ? 0 : next;
+      });
+    }, 1000);
+    return () => clearInterval(id);
+  }, [targetMs]);
+
+  const { d, h, m, s } = msToDHMS(remaining);
+
+  return (
+    <div className="mt-2 grid grid-cols-4 gap-2">
+      <TimeCell label="Days" value={d} />
+      <TimeCell label="Hrs" value={h} />
+      <TimeCell label="Min" value={m} />
+      <TimeCell label="Sec" value={s} />
+    </div>
+  );
+}
+
+function TimeCell({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="rounded-lg border px-2 py-3 bg-[hsl(var(--card))]">
+      <div className="text-2xl font-semibold leading-none">{value}</div>
+      <div className="mt-1 text-[10px] uppercase tracking-wide text-[hsl(var(--muted-foreground))]">
+        {label}
+      </div>
+    </div>
+  );
+}
+
+/* ---------- Time helpers (IST aware) ---------- */
+const IST_OFFSET_MIN = 330; // +05:30
+
+function getNextSundayISTEndMs(now = new Date()): number {
+  const offsetMs = IST_OFFSET_MIN * 60 * 1000;
+
+  // Shift "now" into IST by adding IST offset; then use UTC getters on the shifted date.
+  const istNowMs = now.getTime() + offsetMs;
+  const istNow = new Date(istNowMs);
+
+  const dow = istNow.getUTCDay(); // 0=Sun,1=Mon,...
+  const addDays = 0 <= dow && dow <= 6 ? (7 - dow) % 7 : 0; // days until next Sunday; if Sunday, =0 (today)
+
+  // Build a date representing (IST) next Sunday's 23:59:59.999 using UTC fields of the shifted date
+  const istY = istNow.getUTCFullYear();
+  const istM = istNow.getUTCMonth();
+  const istD = istNow.getUTCDate() + addDays;
+
+  // This is "23:59:59.999" in IST calendar; convert to UTC by subtracting offset
+  const sundayEndISTasUTC =
+    Date.UTC(istY, istM, istD, 23, 59, 59, 999) - offsetMs;
+
+  // If already past this Sunday (edge case when user opens right after midnight calc), push by 7d
+  const target =
+    sundayEndISTasUTC <= now.getTime()
+      ? sundayEndISTasUTC + 7 * 24 * 60 * 60 * 1000
+      : sundayEndISTasUTC;
+
+  return target;
+}
+
+function getISTClosingLabel(targetMs: number): string {
+  const d = new Date(targetMs);
+  // Format in IST
+  const parts = new Intl.DateTimeFormat("en-IN", {
+    timeZone: "Asia/Kolkata",
+    weekday: "short",
+    day: "2-digit",
+    month: "short",
+  }).formatToParts(d);
+  const map = Object.fromEntries(parts.map((p) => [p.type, p.value]));
+  return `Registration closes ${map.weekday}, ${map.day} ${map.month} • 11:59 PM IST`;
+}
+
+function msToDHMS(ms: number) {
+  const total = Math.max(0, Math.floor(ms / 1000));
+  const d = Math.floor(total / 86400);
+  const h = Math.floor((total % 86400) / 3600);
+  const m = Math.floor((total % 3600) / 60);
+  const s = total % 60;
+  return {
+    d: String(d).padStart(2, "0"),
+    h: String(h).padStart(2, "0"),
+    m: String(m).padStart(2, "0"),
+    s: String(s).padStart(2, "0"),
+  };
+}
+
 function Pill({ icon: Icon, text }: { icon: any; text: string }) {
   return (
     <span className="inline-flex items-center gap-1 rounded-full border px-2.5 py-1 text-xs border-[hsl(var(--border))] bg-[hsl(var(--background)/.7)]">
@@ -175,27 +418,27 @@ function WhyJoin() {
     },
     {
       icon: Rocket,
-      title: "1st/2nd Year Fast-Track",
+      title: "Student Chapter Program",
       desc: "Early entry into Campus Chapter leadership.",
     },
     {
       icon: ShieldCheck,
       title: "Certificates & LoRs",
-      desc: "Certificates; LoRs for top performers.",
+      desc: "Certificates & LoRs for top performers.",
     },
     {
       icon: Medal,
       title: "Projects, Internships & PPO",
-      desc: "Real-world projects; PPO for top performers.",
+      desc: "Real-world projects & PPO for top performers.",
     },
   ];
   return (
-    <section className="py-14 md:py-20 bg-[hsl(var(--muted)/.3)]">
+    <section id="benefits" className="py-14 md:py-20 bg-[hsl(var(--muted)/.3)]">
       <div className="mx-auto max-w-7xl px-4">
         <SectionTitle
           badge="Why join"
-          title="Benefits that are "
-          subtitle="Designed for 1st year to final year students."
+          title="Unlock Career-Boosting Benefits and Stipends"
+          subtitle="Tailored for students from 1st year to final year."
         />
         <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {items.map(({ icon: Icon, title, desc }) => (
@@ -228,37 +471,38 @@ function Ladder() {
       tone: "bronze",
       icon: Star,
       title: "Bronze",
-      unlock: "Onboarding complete",
+      unlock: "5+ referrals",
       bullets: [
-        "Campus Mitra badge",
-        "Certificate of Participation",
-        "Community access (WhatsApp/Discord)",
-        "Career starter kit (resume + interview prep)",
+        "Campus Executive badge",
+        "Certificate of Appreciation",
+        "Exclusive Workshops",
+        "Community access",
+        "Access to latest job opportunities",
       ],
     },
     {
       tone: "silver",
       icon: Trophy,
       title: "Silver",
-      unlock: "50+ referrals OR 1 event/workshop",
+      unlock: "15+ referrals",
       bullets: [
-        "Merch kit: tee, notebook, stickers",
-        "Stipend/bonus ₹2,000–₹5,000",
+        "Everything in Bronze",
+        "Coupon worth ₹4,500",
+        "FREE Career starter kit",
+        "Letter of Recommendation",
         "Invite to industry expert session",
-        "Coupons + early job access",
       ],
     },
     {
       tone: "gold",
       icon: Crown,
       title: "Gold",
-      unlock: "150+ referrals • multiple events • consistency",
+      unlock: "30+ referrals",
       bullets: [
-        "Additional stipend up to ₹15,000",
-        "Letter of Recommendation",
-        "Industry projects with partners",
+        "Leadership: Establish Student Chapter",
+        "Coupon worth ₹9,000",
+        "Merch kit: T-Shirt, Stickers",
         "Priority internship offers",
-        "Leadership: Campus Chapter Lead",
         "Website & socials spotlight",
       ],
     },
@@ -266,12 +510,12 @@ function Ladder() {
       tone: "platinum",
       icon: Rocket,
       title: "Platinum",
-      unlock: "300+ referrals • major collab • excellence",
+      unlock: "50+ referrals",
       bullets: [
+        "Competitive Stipend",
         "PPO consideration (eligibility-based)",
-        "National Ambassador recognition",
-        "High-value goodies (headphones/Kindle/etc.)",
-        "Founder/mentor meet-up",
+        "High-value goodies (Headphones/Kindle/etc.)",
+        "A free visit to Jyesta's Office",
         "Lead regional CA teams",
       ],
     },
@@ -293,7 +537,7 @@ function Ladder() {
       <div className="mx-auto max-w-7xl px-4">
         <SectionTitle
           badge="Gamified Growth"
-          title="Milestone-based "
+          title="Milestone-based Perks Ladder"
           subtitle="Clear path → join → hit targets → unlock bigger rewards."
         />
         <div className="mt-10 grid gap-5 lg:grid-cols-4">
@@ -345,11 +589,15 @@ function Ladder() {
 /* ---------------- How it works ---------------- */
 function HowItWorks() {
   const steps = [
-    { n: 1, title: "Apply", desc: "Tell us about you and your campus reach." },
+    {
+      n: 1,
+      title: "Apply for Free",
+      desc: "Tell us about you and your campus reach.",
+    },
     {
       n: 2,
       title: "Onboard",
-      desc: "Finish short training, get toolkit + referral codes.",
+      desc: "Finish short training and get started.",
     },
     {
       n: 3,
@@ -359,13 +607,13 @@ function HowItWorks() {
     {
       n: 4,
       title: "Lead a Chapter",
-      desc: "Hit milestones to launch an official Jyesta Chapter.",
+      desc: "Hit milestones to establish an official Jyesta Student Chapter.",
     },
   ];
   return (
-    <section className="py-14 md:py-20 bg-[hsl(var(--muted)/.3)]">
+    <section id="process" className="py-14 md:py-20 bg-[hsl(var(--muted)/.3)]">
       <div className="mx-auto max-w-7xl px-4">
-        <SectionTitle badge="Simple flow" title="How it " />
+        <SectionTitle badge="Simple flow" title="How it works" />
         <div className="mt-8 grid gap-5 md:grid-cols-2 lg:grid-cols-4">
           {steps.map((s) => (
             <div
@@ -399,21 +647,19 @@ function EligAndTasks() {
           <GradientCard
             title="Eligibility"
             items={[
-              "Undergrad (Engineering or Management)",
-              "Good communication & campus involvement",
-              "~5–8 hrs/week alongside academics",
-              "One Campus Mitra per college (Pan-India)",
-              "1st & 2nd years get fast-track leadership",
+              "Undergraduate student in Engineering or Management",
+              "Active in campus activities with strong communication skills",
+              "Able to dedicate a few hours weekly alongside academics",
+              "Only one Campus Executive per college across India",
             ]}
           />
           <GradientCard
             title="What you’ll do"
             items={[
-              "Organize info sessions / workshops monthly",
-              "Share updates in classes & student groups",
-              "Guide peers using your referral link/code",
-              "Collect feedback to improve outreach",
-              "Report monthly to unlock milestones",
+              "Share program updates with classmates and student groups",
+              "Assist peers with your unique referral link or code",
+              "Gather feedback to enhance outreach efforts",
+              "Submit monthly reports to achieve milestones",
             ]}
           />
         </div>
@@ -449,88 +695,365 @@ function GradientCard({ title, items }: { title: string; items: string[] }) {
   );
 }
 
-/* ---------------- FAQ ---------------- */
-function FAQ() {
-  return (
-    <section className="py-14 md:py-20 bg-[hsl(var(--muted)/.3)]">
-      <div className="mx-auto max-w-3xl px-4">
-        <SectionTitle
-          badge="FAQs"
-          title="Everything you want to ask"
-          subtitle="Stipends, milestones, and chapter launch—explained."
-        />
-
-        <div className="mt-6 divide-y rounded-xl border">
-          {[
-            [
-              "How are stipends and bonuses decided?",
-              "Performance-based: Silver ₹2,000–₹5,000; Gold up to ₹15,000, tied to verified referrals, event impact & consistency.",
-            ],
-            [
-              "Can 1st/2nd years apply?",
-              "Yes—fast-track leadership and grow into a Campus Chapter Lead.",
-            ],
-            [
-              "What counts as a referral / enrollment?",
-              "A referral uses your code/link. An enrollment is a paid registration for Jyesta’s 2-month training + 1-month internship.",
-            ],
-            [
-              "How do I start a Chapter?",
-              "Hit Gold milestones (e.g., 150+ referrals & consistent events), get college approval, then launch with Jyesta’s charter.",
-            ],
-          ].map(([q, a]) => (
-            <details key={q} className="group open:bg-[hsl(var(--card))]">
-              <summary className="cursor-pointer px-4 py-3 font-medium hover:opacity-90">
-                {q}
-              </summary>
-              <div className="px-4 pb-4 text-sm text-[hsl(var(--muted-foreground))]">
-                {a}
-              </div>
-            </details>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* ---------------- Final CTA & Footer ---------------- */
-function FinalCTA() {
+/* ---------------- APPLY (New) ---------------- */
+function Apply() {
   return (
     <section id="apply" className="relative overflow-hidden py-16 md:py-24">
-      <div className="absolute inset-0 -z-10 bg-brand-gradient opacity-25 blur-2xl" />
-      <div className="mx-auto max-w-4xl px-4 text-center">
-        <h2 className="text-3xl md:text-4xl font-semibold tracking-tight">
-          Ready to lead your{" "}
-          <span className="text-gradient">college community</span>?
-        </h2>
-        <p className="mt-2 text-[hsl(var(--muted-foreground))]">
-          Apply now to get your onboarding kit, referral code, and community
-          access this week.
-        </p>
-        <div className="mt-6 flex justify-center gap-3">
-          <a href="https://forms.gle/" className="btn-aurora">
-            Apply Now <ArrowRight className="h-4 w-4" />
-          </a>
-          <a
-            href="/campus-mitra-deck.pdf"
-            target="_blank"
-            className="inline-flex items-center rounded-md border px-4 py-2 text-sm hover:opacity-90"
-          >
-            Program Deck
+      <div className="absolute inset-0 -z-10 bg-brand-gradient opacity-15 blur-2xl" />
+      <div className="mx-auto max-w-3xl px-4">
+        <SectionTitle
+          badge="Apply for Free"
+          title="Join the Campus Executive program"
+          subtitle="Fill this quick form. We’ll reach out within a few days."
+        />
+        <div className="w-full flex justify-center mt-5">
+          <a href="#apply" className="btn-aurora">
+            Apply for Free <ArrowRight className="h-4 w-4" />
           </a>
         </div>
       </div>
     </section>
   );
 }
+
+function ApplyForm() {
+  const [loading, setLoading] = useState(false);
+  const [ok, setOk] = useState<null | boolean>(null);
+  const [err, setErr] = useState<string | null>(null);
+
+  async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setLoading(true);
+    setErr(null);
+    setOk(null);
+
+    const fd = new FormData(e.currentTarget);
+    const payload = {
+      name: (fd.get("name") as string)?.trim(),
+      email: (fd.get("email") as string)?.trim(),
+      college: (fd.get("college") as string)?.trim(),
+      phone: (fd.get("phone") as string)?.trim(),
+      gradYear: fd.get("gradYear") as string as
+        | "2026"
+        | "2027"
+        | "2028"
+        | "2029",
+      website: (fd.get("website") as string) || "", // honeypot
+    };
+
+    try {
+      const res = await fetch("/api/apply", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      const json = await res.json();
+      if (!res.ok || !json?.ok) {
+        throw new Error(json?.error || "Submission failed");
+      }
+      setOk(true);
+      (e.target as HTMLFormElement).reset();
+    } catch (e: any) {
+      setOk(false);
+      setErr(e?.message || "Something went wrong");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return (
+    <form onSubmit={onSubmit} className="grid gap-4">
+      {/* honeypot */}
+      <input
+        type="text"
+        name="website"
+        aria-hidden="true"
+        tabIndex={-1}
+        className="hidden"
+      />
+
+      <div className="grid md:grid-cols-2 gap-4">
+        <Field label="Full Name" htmlFor="name" required>
+          <input
+            id="name"
+            name="name"
+            required
+            className="w-full rounded-md border px-3 py-2 outline-none focus:ring-2 focus:ring-[hsl(var(--ring))]"
+            placeholder="Enter your name"
+          />
+        </Field>
+
+        <Field label="Email" htmlFor="email" required>
+          <input
+            id="email"
+            name="email"
+            type="email"
+            required
+            className="w-full rounded-md border px-3 py-2 outline-none focus:ring-2 focus:ring-[hsl(var(--ring))]"
+            placeholder="Enter your college email"
+          />
+        </Field>
+
+        <Field
+          label="College Name"
+          htmlFor="college"
+          required
+          className="md:col-span-2"
+        >
+          <input
+            id="college"
+            name="college"
+            required
+            className="w-full rounded-md border px-3 py-2 outline-none focus:ring-2 focus:ring-[hsl(var(--ring))]"
+            placeholder="Enter your college name"
+          />
+        </Field>
+
+        <Field label="Phone (India)" htmlFor="phone" required>
+          <input
+            id="phone"
+            name="phone"
+            inputMode="tel"
+            required
+            pattern="^(\+?91[-\s]?)?[6-9]\d{9}$"
+            title="Enter a valid Indian mobile number"
+            className="w-full rounded-md border px-3 py-2 outline-none focus:ring-2 focus:ring-[hsl(var(--ring))]"
+            placeholder="Enter your phone number"
+          />
+        </Field>
+
+        <Field label="Graduation Year" required>
+          <div className="grid grid-cols-4 gap-2">
+            {(["2026", "2027", "2028", "2029"] as const).map((y) => (
+              <label
+                key={y}
+                className="flex items-center justify-center gap-2 rounded-md border px-3 py-2 cursor-pointer hover:bg-[hsl(var(--secondary))]"
+              >
+                <input
+                  type="radio"
+                  name="gradYear"
+                  value={y}
+                  required
+                  className="accent-[hsl(var(--primary))]"
+                />
+                <span className="text-sm">{y}</span>
+              </label>
+            ))}
+          </div>
+        </Field>
+      </div>
+
+      <button
+        type="submit"
+        disabled={loading}
+        className="btn-aurora w-full justify-center disabled:opacity-60 cursor-pointer"
+      >
+        {loading ? "Submitting..." : "Submit Application"}
+      </button>
+
+      {ok && (
+        <div className="rounded-md border px-3 py-2 text-sm bg-[hsl(var(--secondary))]">
+          ✅ Thanks! Your application is recorded. We’ll reach out soon.
+        </div>
+      )}
+      {ok === false && (
+        <div className="rounded-md border px-3 py-2 text-sm bg-[hsl(var(--destructive)/.08)] text-[hsl(var(--destructive))]">
+          {err || "Something went wrong. Please try again."}
+        </div>
+      )}
+
+      <p className="text-xs text-[hsl(var(--muted-foreground))]">
+        By submitting, you agree to be contacted by Jyesta regarding the Campus
+        Executive program.
+      </p>
+    </form>
+  );
+}
+
+function Field({
+  label,
+  htmlFor,
+  required,
+  children,
+  className,
+}: {
+  label: string;
+  htmlFor?: string;
+  required?: boolean;
+  children: React.ReactNode;
+  className?: string;
+}) {
+  return (
+    <div className={className}>
+      <label htmlFor={htmlFor} className="mb-1 block text-sm font-medium">
+        {label}
+        {required && <span className="text-[hsl(var(--destructive))]"> *</span>}
+      </label>
+      {children}
+    </div>
+  );
+}
+
+/* ---------------- Footer ---------------- */
 function Footer() {
   const year = new Date().getFullYear();
+
   return (
-    <footer className="border-t">
+    <footer className="border-t relative">
+      {/* brand stripe */}
       <div className="h-1 bg-brand-gradient" aria-hidden />
-      <div className="mx-auto max-w-7xl px-4 py-10 text-center text-sm text-[hsl(var(--muted-foreground))]">
-        © {year} Jyesta. All rights reserved.
+
+      <div className="mx-auto max-w-7xl px-4 py-12">
+        {/* Top grid */}
+        <div className="grid gap-10 sm:gap-8 md:grid-cols-2 lg:grid-cols-4 items-start">
+          {/* Brand / blurb */}
+          <div>
+            <div className="text-lg font-semibold">
+              <span className="text-gradient">Jyesta Campus Mitra</span>
+            </div>
+            <p className="mt-3 text-sm text-[hsl(var(--muted-foreground))]">
+              Become the official face of Jyesta in your college. Host events,
+              grow a community, and unlock stipends, internships & PPO via our
+              milestone-based ladder.
+            </p>
+          </div>
+
+          {/* Quick links */}
+          <div>
+            <div className="font-medium">Quick Links</div>
+            <ul className="mt-3 space-y-2 text-sm text-[hsl(var(--muted-foreground))]">
+              <li>
+                <a className="hover:underline" href="#benefits">
+                  Benefits
+                </a>
+              </li>
+              <li>
+                <a className="hover:underline" href="#ladder">
+                  Perks Ladder
+                </a>
+              </li>
+              <li>
+                <a className="hover:underline" href="#process">
+                  How it works
+                </a>
+              </li>
+              <li>
+                <a className="hover:underline" href="#apply">
+                  Apply
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          {/* Contact / address */}
+          <div>
+            <div className="font-medium">Contact</div>
+            <ul className="mt-3 space-y-2 text-sm text-[hsl(var(--muted-foreground))]">
+              <li className="flex items-center gap-2">
+                <Mail className="h-4 w-4 text-[hsl(var(--primary))]" />
+                <a className="hover:underline" href="mailto:support@jyesta.com">
+                  support@jyesta.com
+                </a>
+              </li>
+              <li className="flex items-center gap-2">
+                <Phone className="h-4 w-4 text-[hsl(var(--primary))]" />
+                <a className="hover:underline" href="tel:+916360584544">
+                  +91 63605 84544
+                </a>
+              </li>
+              <li className="flex items-start gap-2">
+                <MapPin className="h-4 w-4 mt-0.5 text-[hsl(var(--primary))]" />
+                <span>
+                  BHIVE Premium Workspace, AKR Tech Park, Hosur Rd, Bengaluru,
+                  Karnataka 560068
+                </span>
+              </li>
+            </ul>
+          </div>
+
+          {/* Help card */}
+          <div className="rounded-2xl p-[1px] bg-brand-gradient">
+            <div className="rounded-[calc(theme(borderRadius.xl))] border bg-[hsl(var(--card))] p-4">
+              <div className="flex items-center gap-2 font-semibold">
+                <LifeBuoy className="h-5 w-5 text-[hsl(var(--primary))]" />
+                Need help?
+              </div>
+              <p className="mt-2 text-sm text-[hsl(var(--muted-foreground))]">
+                Stuck or have questions about the program or application? Our
+                team replies quickly.
+              </p>
+              <div className="mt-3 flex flex-col sm:flex-row gap-2">
+                <a
+                  href="mailto:support@jyesta.com"
+                  className="btn-aurora w-full sm:w-auto justify-center"
+                >
+                  Email Support
+                </a>
+                <a
+                  href="tel:+916360584544"
+                  className="inline-flex w-full sm:w-auto items-center justify-center rounded-md border px-4 py-2 text-sm hover:opacity-90"
+                >
+                  Call Us
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Bottom bar */}
+        <div className="mt-10 flex flex-col-reverse gap-4 sm:flex-row sm:items-center sm:justify-between">
+          {/* Socials */}
+          <div className="flex items-center gap-3 text-[hsl(var(--muted-foreground))]">
+            <a
+              href="https://www.instagram.com/jyesta_corporate/"
+              aria-label="Instagram"
+              className="hover:opacity-90"
+            >
+              <Instagram className="h-4 w-4" />
+            </a>
+            <a
+              href="https://www.linkedin.com/company/jyesta-corporate-entity"
+              aria-label="LinkedIn"
+              className="hover:opacity-90"
+            >
+              <Linkedin className="h-4 w-4" />
+            </a>
+            <a
+              href="https://www.youtube.com/channel/UCb9P3srd73y3-BfVls-7h7Q"
+              aria-label="YouTube"
+              className="hover:opacity-90"
+            >
+              <Youtube className="h-4 w-4" />
+            </a>
+            <a
+              href="https://x.com/jyestacorporate"
+              aria-label="Twitter / X"
+              className="hover:opacity-90"
+            >
+              <Twitter className="h-4 w-4" />
+            </a>
+            <a
+              href="https://www.facebook.com/people/Jyesta-Corporate-Entity/61569878710843/"
+              aria-label="Facebook"
+              className="hover:opacity-90"
+            >
+              <Facebook className="h-4 w-4" />
+            </a>
+          </div>
+
+          {/* Back to top */}
+          <button
+            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+            className="inline-flex items-center gap-2 rounded-md border px-3 py-2 text-xs hover:opacity-90 self-start sm:self-auto"
+            aria-label="Back to top"
+          >
+            <ArrowUp className="h-4 w-4" /> Back to top
+          </button>
+        </div>
+
+        <div className="mt-4 text-center text-xs text-[hsl(var(--muted-foreground))]">
+          © {year} Jyesta. All rights reserved.
+        </div>
       </div>
     </footer>
   );
