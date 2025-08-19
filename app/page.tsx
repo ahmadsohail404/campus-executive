@@ -198,6 +198,10 @@ const GROUP_PHOTOS: GroupPhoto[] = [
     src: "/ca-2.jpeg",
     alt: "Jyesta Campus Executives",
   },
+  {
+    src: "/ca-3.jpeg",
+    alt: "Jyesta Campus Executives",
+  },
 ];
 
 function Ambassadors() {
@@ -232,7 +236,7 @@ function Ambassadors() {
         />
 
         {/* Two per row on sm+; one per row on mobile */}
-        <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-5">
+        <div className="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-5">
           {GROUP_PHOTOS.map((p, i) => (
             <div
               key={p.src}
