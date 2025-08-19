@@ -136,11 +136,153 @@ function Hero() {
             <span className="text-gradient">Jyesta Campus Executive</span>
           </h1>
 
-          <p className="mt-4 text-[hsl(var(--muted-foreground))] md:text-lg">
-            Be the official face of Jyesta in your college. Host events, grow a
-            community, and unlock <strong>stipends, internships & PPO</strong>{" "}
-            with a milestone-based ladder.
-          </p>
+          {/* Perks grid */}
+          <div className="mt-4 space-y-3 w-full">
+            <p className="text-[hsl(var(--muted-foreground))] md:text-lg">
+              Be the official face of Jyesta on campus—host events, grow a
+              community, and unlock <strong>stipends, internships & PPO</strong>{" "}
+              with our milestone ladder.
+            </p>
+
+            {/* chips */}
+            <ul className="chip-grid" role="list">
+              {[
+                {
+                  label: "Competitive Stipend",
+                  emoji: "💸",
+                  hue: "from-emerald-500/20 to-emerald-500/10",
+                  ring: "ring-emerald-500/30",
+                  glow: "shadow-[0_0_24px_rgba(16,185,129,0.25)]",
+                },
+                {
+                  label: "PPO Consideration",
+                  emoji: "🧠",
+                  hue: "from-blue-500/20 to-blue-500/10",
+                  ring: "ring-blue-500/30",
+                  glow: "shadow-[0_0_24px_rgba(59,130,246,0.25)]",
+                },
+                {
+                  label: "Headphones • Hoodies • Stickers",
+                  emoji: "🎁",
+                  hue: "from-amber-500/20 to-amber-500/10",
+                  ring: "ring-amber-500/30",
+                  glow: "shadow-[0_0_24px_rgba(245,158,11,0.25)]",
+                },
+                {
+                  label: "Free visit to Jyesta HQ",
+                  emoji: "✈️",
+                  hue: "from-fuchsia-500/20 to-fuchsia-500/10",
+                  ring: "ring-fuchsia-500/30",
+                  glow: "shadow-[0_0_24px_rgba(217,70,239,0.25)]",
+                },
+                {
+                  label: "Lead regional CA teams",
+                  emoji: "👑",
+                  hue: "from-indigo-500/20 to-indigo-500/10",
+                  ring: "ring-indigo-500/30",
+                  glow: "shadow-[0_0_24px_rgba(99,102,241,0.25)]",
+                },
+                {
+                  label: "Lead Student Chapter",
+                  emoji: "🏫",
+                  hue: "from-rose-500/20 to-rose-500/10",
+                  ring: "ring-rose-500/30",
+                  glow: "shadow-[0_0_24px_rgba(244,63,94,0.25)]",
+                },
+              ].map((item, i) => (
+                <li key={item.label} className="chip-cell">
+                  <span
+                    className={[
+                      "chip",
+                      "group inline-flex items-center gap-2 rounded-full",
+                      "px-3.5 py-1.5 text-xs md:text-sm font-medium",
+                      "border border-white/20 dark:border-white/10",
+                      "backdrop-blur-md",
+                      "bg-gradient-to-br",
+                      item.hue,
+                      "text-[hsl(var(--foreground))] hover:text-[hsl(var(--foreground))]",
+                      "transition-all duration-200",
+                      "ring-1",
+                      item.ring,
+                      "hover:-translate-y-[1px] hover:scale-[1.02]",
+                      "shadow-sm hover:shadow-md",
+                      item.glow,
+                    ].join(" ")}
+                    role="listitem"
+                    aria-label={item.label}
+                    title={item.label}
+                    style={{ animationDelay: `${i * 60}ms` }}
+                  >
+                    <span className="text-base leading-none select-none">
+                      {item.emoji}
+                    </span>
+                    <span className="truncate">{item.label}</span>
+
+                    {/* subtle animated accent dot */}
+                    <span className="ml-auto inline-flex h-1.5 w-1.5 rounded-full bg-white/60 dark:bg-white/70 opacity-60 group-hover:opacity-100 transition" />
+                  </span>
+                </li>
+              ))}
+            </ul>
+
+            {/* animations & grid layout */}
+            <style jsx>{`
+              /* grid: 1 col → 2 cols (>=640px) → 3 cols (>=1024px) */
+              .chip-grid {
+                display: grid;
+                grid-template-columns: repeat(1, minmax(0, 1fr));
+                gap: 10px;
+                margin-top: 6px;
+              }
+              @media (min-width: 640px) {
+                .chip-grid {
+                  grid-template-columns: repeat(2, minmax(0, 1fr));
+                  gap: 12px;
+                }
+              }
+              @media (min-width: 1024px) {
+                .chip-grid {
+                  grid-template-columns: repeat(3, minmax(0, 1fr));
+                  gap: 14px;
+                }
+              }
+
+              /* make each chip occupy full cell width with consistent height */
+              .chip-cell {
+                width: 100%;
+                list-style: none;
+              }
+              .chip {
+                width: 100%;
+                min-height: 44px;
+              }
+
+              /* pop-in animation (staggered via inline delay above) */
+              @keyframes chipPop {
+                0% {
+                  transform: translateY(2px) scale(0.98);
+                  opacity: 0;
+                }
+                60% {
+                  transform: translateY(0) scale(1.03);
+                  opacity: 1;
+                }
+                100% {
+                  transform: translateY(0) scale(1);
+                  opacity: 1;
+                }
+              }
+              .chip {
+                animation: chipPop 420ms ease-out both;
+              }
+
+              @media (prefers-reduced-motion: reduce) {
+                .chip {
+                  animation: none;
+                }
+              }
+            `}</style>
+          </div>
 
           <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
             <div className="mt-8 rounded-2xl p-[1px] bg-brand-gradient">
