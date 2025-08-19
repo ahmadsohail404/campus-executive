@@ -713,7 +713,7 @@ function Ladder() {
       bullets: [
         "Leadership: Establish Student Chapter",
         "Coupon worth ₹9,000",
-        "Merch kit: T-Shirt, Stickers",
+        "Merch kit: Hoodies, Stickers",
         "Priority internship offers",
         "Website & socials spotlight",
       ],
