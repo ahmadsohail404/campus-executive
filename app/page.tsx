@@ -1092,7 +1092,7 @@ function ApplyForm() {
         | "2027"
         | "2028"
         | "2029",
-      website: (fd.get("website") as string) || "", // honeypot
+      kamName: (fd.get("kam") as string)?.trim(),
     };
 
     try {
@@ -1117,15 +1117,6 @@ function ApplyForm() {
 
   return (
     <form onSubmit={onSubmit} className="grid gap-4">
-      {/* honeypot */}
-      <input
-        type="text"
-        name="website"
-        aria-hidden="true"
-        tabIndex={-1}
-        className="hidden"
-      />
-
       <div className="grid md:grid-cols-2 gap-4">
         <Field label="Full Name" htmlFor="name" required>
           <input
@@ -1148,12 +1139,7 @@ function ApplyForm() {
           />
         </Field>
 
-        <Field
-          label="College Name"
-          htmlFor="college"
-          required
-          className="md:col-span-2"
-        >
+        <Field label="College Name" htmlFor="college" required>
           <input
             id="college"
             name="college"
@@ -1162,7 +1148,6 @@ function ApplyForm() {
             placeholder="Enter your college name"
           />
         </Field>
-
         <Field label="Phone (India)" htmlFor="phone" required>
           <input
             id="phone"
@@ -1173,6 +1158,16 @@ function ApplyForm() {
             title="Enter a valid Indian mobile number"
             className="w-full rounded-md border px-3 py-2 outline-none focus:ring-2 focus:ring-[hsl(var(--ring))]"
             placeholder="Enter your phone number"
+          />
+        </Field>
+
+        <Field label="KAM Name" htmlFor="kam" required>
+          <input
+            id="kam"
+            name="kam"
+            required
+            className="w-full rounded-md border px-3 py-2 outline-none focus:ring-2 focus:ring-[hsl(var(--ring))]"
+            placeholder="KAM name (enter self if not applicable)"
           />
         </Field>
 
@@ -1263,7 +1258,7 @@ function Footer() {
           {/* Brand / blurb */}
           <div>
             <div className="text-lg font-semibold">
-              <span className="text-gradient">Jyesta Campus Mitra</span>
+              <span className="text-gradient">Jyesta Campus Executive</span>
             </div>
             <p className="mt-3 text-sm text-[hsl(var(--muted-foreground))]">
               Become the official face of Jyesta in your college. Host events,

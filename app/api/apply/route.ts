@@ -10,7 +10,7 @@ type Payload = {
   college: string;
   phone: string;
   gradYear: "2026" | "2027" | "2028" | "2029";
-  website?: string; // honeypot
+  kamName: string;
 };
 
 const SHEET_NAME = process.env.GOOGLE_SHEET_NAME || "Applications";
@@ -23,22 +23,21 @@ export async function POST(req: Request) {
   try {
     const data = (await req.json()) as Payload;
 
-    // 0) Honeypot
-    if (data.website) return NextResponse.json({ ok: true });
-
     // 1) Validate
     const name = sanitize(data.name);
     const email = sanitize(data.email);
     const college = sanitize(data.college);
     const phone = sanitize(data.phone);
     const gradYear = String(data.gradYear || "");
+    const kamName = sanitize(data.kamName);
 
     if (
       !name ||
       !email ||
       !college ||
       !phone ||
-      !/^20(26|27|28|29)$/.test(gradYear)
+      !/^20(26|27|28|29)$/.test(gradYear) ||
+      !kamName
     ) {
       return NextResponse.json(
         { ok: false, error: "Invalid input" },
@@ -90,7 +89,7 @@ export async function POST(req: Request) {
     }
 
     // 4) Ensure header row
-    const headerRange = `${SHEET_NAME}!A1:F1`;
+    const headerRange = `${SHEET_NAME}!A1:G1`;
     const headerGet = await sheets.spreadsheets.values.get({
       spreadsheetId,
       range: headerRange,
@@ -104,6 +103,7 @@ export async function POST(req: Request) {
       "College",
       "Phone",
       "Graduation Year",
+      "KAM Name",
     ];
     const headerMissing = wantHeader.some((h, i) => (headerRow[i] || "") !== h);
 
@@ -136,7 +136,7 @@ export async function POST(req: Request) {
 
     // 5) Append the row (anchor at A1, Sheets will insert at the end)
     const now = istTimestamp();
-    const values = [[now, name, email, college, phone, gradYear]];
+    const values = [[now, name, email, college, phone, gradYear, kamName]];
     await sheets.spreadsheets.values.append({
       spreadsheetId,
       range: `${SHEET_NAME}!A1`,
