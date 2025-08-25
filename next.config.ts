@@ -1,7 +1,11 @@
-import type { NextConfig } from "next";
-
-const nextConfig: NextConfig = {
-  output: "standalone",
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  async rewrites() {
+    return [
+      // Proxy analytics
+      { source: "/va/:path*", destination: "/_vercel/insights/:path*" },
+      { source: "/vs/:path*", destination: "/_vercel/speed-insights/:path*" },
+    ];
+  },
 };
-
-export default nextConfig;
+module.exports = nextConfig;

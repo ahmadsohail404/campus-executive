@@ -622,23 +622,41 @@ function Webinar() {
 
 /* Countdown to Sunday 11:59 PM IST */
 
+/* Countdown to Sunday 11:59 PM IST */
 function Countdown({ targetMs }: { targetMs: number }) {
-  const [remaining, setRemaining] = useState(() =>
-    Math.max(0, targetMs - Date.now())
-  );
+  const [mounted, setMounted] = useState(false);
+  const [remaining, setRemaining] = useState(0);
+
+  useEffect(() => setMounted(true), []);
 
   useEffect(() => {
-    const id = setInterval(() => {
-      setRemaining((prev) => {
-        const next = targetMs - Date.now();
-        return next <= 0 ? 0 : next;
-      });
-    }, 1000);
+    if (!mounted) return;
+    const tick = () => setRemaining(Math.max(0, targetMs - Date.now()));
+    tick(); // initialize immediately
+    const id = setInterval(tick, 1000);
     return () => clearInterval(id);
-  }, [targetMs]);
+  }, [mounted, targetMs]);
+
+  if (!mounted) {
+    // SSR-safe placeholder (no text to mismatch)
+    return (
+      <div className="mt-2 grid grid-cols-4 gap-2">
+        {["Days", "Hrs", "Min", "Sec"].map((l) => (
+          <div
+            key={l}
+            className="rounded-lg border px-2 py-3 bg-[hsl(var(--card))]"
+          >
+            <div className="text-2xl font-semibold leading-none">--</div>
+            <div className="mt-1 text-[10px] uppercase tracking-wide text-[hsl(var(--muted-foreground))]">
+              {l}
+            </div>
+          </div>
+        ))}
+      </div>
+    );
+  }
 
   const { d, h, m, s } = msToDHMS(remaining);
-
   return (
     <div className="mt-2 grid grid-cols-4 gap-2">
       <TimeCell label="Days" value={d} />
@@ -1414,7 +1432,8 @@ function Footer() {
         </div>
 
         <div className="mt-4 text-center text-xs text-[hsl(var(--muted-foreground))]">
-          © {year} Jyesta. All rights reserved.
+          © <time suppressHydrationWarning>{new Date().getFullYear()}</time>{" "}
+          Jyesta. All rights reserved.
         </div>
       </div>
     </footer>
