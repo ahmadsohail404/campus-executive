@@ -38,6 +38,8 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 
+import { track } from "@vercel/analytics";
+
 export default function Page() {
   return (
     <main>
@@ -1081,6 +1083,11 @@ function ApplyForm() {
     setErr(null);
     setOk(null);
 
+    track("apply_submit_attempt", {
+      placement: "hero_apply_form",
+      path: typeof window !== "undefined" ? window.location.pathname : "",
+    });
+
     const fd = new FormData(e.currentTarget);
     const payload = {
       name: (fd.get("name") as string)?.trim(),
@@ -1195,6 +1202,12 @@ function ApplyForm() {
       <button
         type="submit"
         disabled={loading}
+        onClick={() => {
+          track("apply_submit_click", {
+            placement: "hero_apply_form",
+            path: typeof window !== "undefined" ? window.location.pathname : "",
+          });
+        }}
         className="btn-aurora w-full justify-center disabled:opacity-60 cursor-pointer"
       >
         {loading ? "Submitting..." : "Submit Application"}
