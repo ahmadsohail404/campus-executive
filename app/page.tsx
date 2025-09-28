@@ -1186,13 +1186,13 @@ function ApplyForm() {
           />
         </Field>
 
-        <Field label="KAM Name" htmlFor="kam" required>
+        <Field label="Executive/Guide Name" htmlFor="kam" required>
           <input
             id="kam"
             name="kam"
             required
             className="w-full rounded-md border px-3 py-2 outline-none focus:ring-2 focus:ring-[hsl(var(--ring))]"
-            placeholder="KAM name (enter self if not applicable)"
+            placeholder="Executive/Guide name (enter self if not applicable)"
           />
         </Field>
 
